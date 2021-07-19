@@ -14,14 +14,15 @@ export default function CompteAvue() {
     ])
     // useLocalStorage('dataUserAccounts', userAccounts);
     let [countId, setCountId] = useLocalStorage('dataCountId', 1);
-    let [change, setChange] = useLocalStorage('dataChange', '');
+    let [sendFrom, setSendFrom] = useLocalStorage('dataSendFrom', '');
+    let [sendTo, setSendTo] = useLocalStorage('dataSendTo', '');
     return (
-        <div className='row mt-5'>
+        <div className='row mt-5 pt-5'>
             <div className="col-3">
                 <SideBar/>
             </div>
             <div className="col-8 offset-1">
-                <MainContent change={change} setChange={setChange} userAccounts={userAccounts} setUserAccounts={setUserAccounts} countId={countId} setCountId={setCountId}/>
+                <MainContent sendFrom={sendFrom} setSendFrom={setSendFrom} setSendTo={setSendTo} sendTo={sendTo} userAccounts={userAccounts} setUserAccounts={setUserAccounts} countId={countId} setCountId={setCountId}/>
             </div>
         </div>
     )

@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 
-export default function MainContent({userAccounts,setUserAccounts, countId, setCountId}) {
+export default function MainContent({userAccounts,setUserAccounts, countId, setCountId, sendFrom, sendTo, setSendFrom, setSendTo}) {
     function addAccount(){
         let inputName = document.getElementById('myID1'); // selecting value of new account name from account creation modal
         let inputNumber = document.getElementById('myID2'); // selecting value of new account number from account creation modal
@@ -25,17 +26,29 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
         }
     }
 
-    function changeHandler() {
-        
+    function changeHandler(e) {
+        setSendFrom(e.target.value);
+        console.log(e.target.value);
+    }
+    function changeHandler2(e) {
+        setSendTo(e.target.value);
+        console.log(e.target.value);
     }
     function moneyTransfer(){
-        let transferFrom = document.getElementById('optionTransferFrom');
-        let transferTo = document.getElementById('optionTransferTo');
-        let amountSent = document.getElementById('amountSent');
-        let instantCheck = document.getElementById('instantTransferChck');
-        
+        let amountSent,findMe;
+        amountSent = document.getElementById('amountSent').value;
+        // let instantCheck = document.getElementById('instantTransferChck');
+        findMe = userAccounts.forEach(element => {
+            if (element.id == sendFrom) {
+                return element.amount = element.amount - amountSent;
+            }
+            if (element.id == sendTo) {
+                return element.amount = +element.amount + +amountSent;
+            }
+        });
+        setUserAccounts(userAccounts)
+        window.location.reload(true)
     }
-
     
     return (
         <div class="tab-content" id="v-pills-tabContent">
@@ -43,7 +56,7 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
                 {/* list rendering of user accounts, all added accounts will be added on the following list */}
                 {userAccounts.map(userAccount=> {
                     return(
-                        <div key={userAccount.id} id={userAccount.id} className="bg-light border border-1 border-dark text-dark row">
+                        <div key={userAccount.id} id={userAccount.id} className="bg-perso border border-2 border-white text-dark row">
                             <div className="col-8 p-3">
                                 <p className='mb-3'>{userAccount.name}</p>
                                 <p className='text-black mb-0'>{userAccount.accountNumber}</p>
@@ -52,8 +65,8 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
                                 <p className=""><span>{userAccount.amount}</span> Eur</p>
                             </div>
                             <div className="col-1 p-3">
-                                <button className='w-100 mb-1'><i class="fas fa-cog"></i></button>
-                                <button className='w-100' onClick={(e) => deleteAccount(e)}><i class="fas fa-trash-alt text-danger"></i></button>
+                                <button className='w-100 mb-1 border-0 bg-transparent text-white'><i class="fas fa-cog fa-2x"></i></button>
+                                <button className='w-100 border-0 bg-transparent' onClick={(e) => deleteAccount(e)}><i class="fas fa-trash-alt fa-2x text-danger"></i></button>
                             </div>
                         </div>
                     )
@@ -97,7 +110,7 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
                         <div className="col-6">
                             <div className="input-group">
                                 <label className='input-group-text'>From</label>
-                                <select onChange={()=>changeHandler()} class="form-select" id="optionTransferFrom">
+                                <select onChange={(e)=>changeHandler(e)} class="form-select" id="optionTransferFrom">
                                     <option selected>Account</option>
                                     {/* List rendering of options. Each account number in the state gets and option to send or receive money from the other end */}
                                     {userAccounts.map(userAccount=> {
@@ -111,7 +124,7 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
                         <div className="col-6">
                             <div className="input-group">
                                 <label className='input-group-text'>To</label>
-                                <select class="form-select" id="optionTransferTo">
+                                <select onChange={(e)=>changeHandler2(e)} class="form-select" id="optionTransferTo">
                                     <option selected>Account</option>
                                     {userAccounts.map(userAccount=> {
                                         return(
@@ -145,7 +158,7 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
                     </div>
                     <div className="row my-3 justify-content-center">
                         <div className="col-4">
-                            <button className="w-100 btn btn-primary rounded">send</button>
+                            <button onClick={()=>moneyTransfer()} className="w-100 btn btn-primary rounded">send</button>
                         </div>
                     </div>
                 </div>

@@ -4,9 +4,9 @@ export default class Nav extends Component {
   render() {
     return (
       <>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light w-100">
+        <nav class="navbar my-4 py-0 navbar-expand-lg navbar-light bg-header w-100">
           <div class="container-fluid">
-            <a class="navbar-brand">
+            <a class="navbar-brand text-white">
               IlyasglmBank
             </a>
             <button
@@ -20,15 +20,15 @@ export default class Nav extends Component {
             >
               <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav">
+            <div class="collapse navbar-collapse py-0" id="navbarNav">
+              <ul class="navbar-nav py-0">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="/">
+                  <a class="nav-link active text-white hoverperso" aria-current="page" href="/">
                     Compte a vue
                   </a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/compteDepargne">
+                <li class="nav-item py-0">
+                  <a class="nav-link text-white hoverperso" href="/compteDepargne">
                     Compte d'epargne
                   </a>
                 </li>
