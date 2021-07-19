@@ -1,9 +1,11 @@
 
 export default function MainContent({userAccounts,setUserAccounts, countId, setCountId}) {
-    function addAccount(name,accountnumber){
+    function addAccount(){
+        let inputName = document.getElementById('myID1'); // selecting value of new account name from account creation modal
+        let inputNumber = document.getElementById('myID2'); // selecting value of new account number from account creation modal
         let newAccount = {
-            name: name,
-            accountNumber: accountnumber,
+            name: inputName.value,
+            accountNumber: inputNumber.value,
             amount: 1300,
             id: countId
         }
@@ -23,16 +25,18 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
         }
     }
 
+    function changeHandler() {
+        
+    }
     function moneyTransfer(){
-        let transferFrom = document.getElementById('optionTransferFrom').value;
-        let transferTo = document.getElementById('optionTransferTo').value;
-        let amountSent = document.getElementById('amountSent').value;
+        let transferFrom = document.getElementById('optionTransferFrom');
+        let transferTo = document.getElementById('optionTransferTo');
+        let amountSent = document.getElementById('amountSent');
         let instantCheck = document.getElementById('instantTransferChck');
-
+        
     }
 
-    let inputName = document.getElementById('myID1'); // selecting value of new account name from account creation modal
-    let inputNumber = document.getElementById('myID2'); // selecting value of new account number from account creation modal
+    
     return (
         <div class="tab-content" id="v-pills-tabContent">
             <div class="tab-pane text-white fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
@@ -80,7 +84,7 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" className="btn btn-primary"  onClick={()=>addAccount(inputName.value, inputNumber.value)} data-bs-dismiss="modal">add account</button>
+                                <button type="button" className="btn btn-primary"  onClick={()=>addAccount()} data-bs-dismiss="modal">add account</button>
                             </div>
                         </div>
                     </div>
@@ -93,12 +97,12 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
                         <div className="col-6">
                             <div className="input-group">
                                 <label className='input-group-text'>From</label>
-                                <select class="form-select" id="inputGroupSelect01">
+                                <select onChange={()=>changeHandler()} class="form-select" id="optionTransferFrom">
                                     <option selected>Account</option>
                                     {/* List rendering of options. Each account number in the state gets and option to send or receive money from the other end */}
                                     {userAccounts.map(userAccount=> {
                                         return(
-                                            <option id='optionTransferFrom' value={userAccount.id}>{userAccount.accountNumber}</option>
+                                            <option value={userAccount.id}>{userAccount.accountNumber}</option>
                                         )
                                     })}
                                 </select>
@@ -107,11 +111,11 @@ export default function MainContent({userAccounts,setUserAccounts, countId, setC
                         <div className="col-6">
                             <div className="input-group">
                                 <label className='input-group-text'>To</label>
-                                <select class="form-select" id="inputGroupSelect01">
+                                <select class="form-select" id="optionTransferTo">
                                     <option selected>Account</option>
                                     {userAccounts.map(userAccount=> {
                                         return(
-                                            <option id={''+userAccount.id} value={userAccount.id}>{userAccount.accountNumber}</option>
+                                            <option value={userAccount.id}>{userAccount.accountNumber}</option>
                                         )
                                     })}
                                 </select>
