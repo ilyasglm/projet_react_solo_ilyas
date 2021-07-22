@@ -28,8 +28,8 @@ export default class Nav extends Component {
                   </a>
                 </li>
                 <li class="nav-item py-0">
-                  <a class="nav-link text-white hoverperso" href="/compteDepargne">
-                    Compte d'epargne
+                  <a class="nav-link text-white hoverperso" href="/historique">
+                    Historique de transactions
                   </a>
                 </li>
               </ul>
