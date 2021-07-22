@@ -13,6 +13,12 @@
     margin-bottom: 1rem !important;
     color: white !important;
 }
+.bg-perso2 {
+    background-color: rgba(255, 255, 255, .15);
+    border-radius: 15px;
+    margin-bottom: 1rem !important;
+    color: black !important;
+}
 
 .bg-header{
     background-color: rgba(255, 255, 255, .11);

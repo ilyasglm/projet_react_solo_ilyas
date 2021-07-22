@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useLocalStorage from '../../../LocalStorage'
 
-export default function MainContent({
-  userAccounts,
-  setUserAccounts,
-  countId,
-  setCountId,
-  sendFrom,
-  sendTo,
-  setSendFrom,
-  setSendTo,
-  historiqueTrans,
-  setHistorique
+export default function MainContent({userAccounts, setUserAccounts, countId, setCountId, sendFrom, sendTo, setSendFrom, setSendTo, transactionsDuCompte, setHistorique,
 }) {
+  // Creation of states
+  let historique = transactionsDuCompte.transactionsDuCompte;
   let [chkbox, setChkbox] = useState("false");
-  let [myId, setMyId] = useState('');
+  let [myId, setMyId] = useState("");
+  let [myColor, setMyColor] = useLocalStorage('dataMyColor', 'blue')
+
+  // Change handlers
+  function changeHandlerColor(e) {
+    if (e.target.value == 'green') {
+      setMyColor('green')
+    } else if (e.target.value == 'red') {
+      setMyColor('red')
+    } else {
+      setMyColor('blue')
+    }
+  }
+
   function handleChange() {
     if (chkbox == "false") {
       setChkbox("true");
@@ -21,6 +27,18 @@ export default function MainContent({
       setChkbox("false");
     }
   }
+  
+  function changeHandler(e) {
+    setSendFrom(e.target.value);
+    console.log(e.target.value);
+  }
+
+  function changeHandler2(e) {
+    setSendTo(e.target.value);
+    console.log(e.target.value);
+  }
+
+  // Main Functions
   function addAccount() {
     let inputName = document.getElementById("myID1"); // selecting value of new account name from account creation modal
     let inputNumber = document.getElementById("myID2"); // selecting value of new account number from account creation modal
@@ -34,6 +52,7 @@ export default function MainContent({
     setUserAccounts(userAccountsArray);
     setCountId(countId + 1);
   }
+
   function deleteAccount(userId) {
     let toBeDeleted = userAccounts;
     toBeDeleted.forEach((element) => {
@@ -46,14 +65,6 @@ export default function MainContent({
     window.location.reload(true);
   }
 
-  function changeHandler(e) {
-    setSendFrom(e.target.value);
-    console.log(e.target.value);
-  }
-  function changeHandler2(e) {
-    setSendTo(e.target.value);
-    console.log(e.target.value);
-  }
   function moneyTransfer() {
     let amountSent, findMe;
     amountSent = document.getElementById("amountSent").value;
@@ -68,7 +79,6 @@ export default function MainContent({
     });
     if (chkbox == "true") {
       setUserAccounts(findMe);
-      window.location.reload(true);
     } else {
       setTimeout(() => {
         alert(`${amountSent} € a été débité de votre compte`);
@@ -76,31 +86,56 @@ export default function MainContent({
         window.location.reload(true);
       }, 5000);
     }
-    let newHistorique = {sendFrom: sendFrom, sendTo:sendTo, amountSent: amountSent};
-    let historiqueTransArray = [...historiqueTrans, newHistorique ]
-    setHistorique(historiqueTransArray);
-    console.log(historiqueTransArray);
+    let newHistorique = {
+      sendFrom: sendFrom,
+      sendTo: sendTo,
+      amountSent: amountSent,
+    };
+    let historiqueTransArray = [...historique, newHistorique];
+    localStorage.setItem(
+      "dataTransaction",
+      JSON.stringify(historiqueTransArray)
+    );
+    window.location.reload(true);
   }
-  function modifyAccount(){
-      let modifiedName = document.getElementById('modifiedName');
-      let modifiedNumber = document.getElementById('modifiedNumber');
-      let modifiedUsers = userAccounts;
-      modifiedUsers.forEach(element => {
-          if (element.id == myId) {
-              element.name = modifiedName.value;
-              element.accountNumber = modifiedNumber.value;
-              console.log(element.id);
-          }
-      });
-      setUserAccounts(modifiedUsers);
-      window.location.reload(true);
+
+  function modifyAccount() {
+    let modifiedName = document.getElementById("modifiedName");
+    let modifiedNumber = document.getElementById("modifiedNumber");
+    let modifiedUsers = userAccounts;
+    modifiedUsers.forEach((element) => {
+      if (element.id == myId) {
+        element.name = modifiedName.value;
+        element.accountNumber = modifiedNumber.value;
+        console.log(element.id);
+      }
+    });
+    setUserAccounts(modifiedUsers);
+    window.location.reload(true);
+  }
+
+  function changeMyColor() {
+    let changeMyBGColor = document.getElementById('app')
+    if (myColor == 'green') {
+      changeMyBGColor.classList.remove('bg-primary')
+      changeMyBGColor.classList.remove('bg-danger')
+      changeMyBGColor.classList.add('bg-success')
+    } else if (myColor == 'red') {
+      changeMyBGColor.classList.remove('bg-primary')
+      changeMyBGColor.classList.remove('bg-success')
+      changeMyBGColor.classList.add('bg-danger')
+    } else {
+      changeMyBGColor.classList.remove('bg-danger')
+      changeMyBGColor.classList.remove('bg-success')
+      changeMyBGColor.classList.add('bg-primary')
+    }
   }
 
   return (
-    <div class="tab-content" id="v-pills-tabContent">
+    <div className="tab-content" id="v-pills-tabContent">
       {/* Compte a vue page */}
       <div
-        class="tab-pane text-white fade show active"
+        className="tab-pane text-white fade show active"
         id="v-pills-home"
         role="tabpanel"
         aria-labelledby="v-pills-home-tab"
@@ -124,48 +159,79 @@ export default function MainContent({
               </div>
               <div className="col-1 p-3" id={userAccount.id}>
                 <button
-                onClick={()=>setMyId(userAccount.id)}
+                  onClick={() => setMyId(userAccount.id)}
                   className="w-100 mb-1 border-0 bg-transparent text-white"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                 >
-                  <i class="fas fa-cog fa-2x"></i>
+                  <i className="fas fa-cog fa-2x"></i>
                 </button>
                 <button
                   className="w-100 border-0 bg-transparent"
                   onClick={() => deleteAccount(userAccount.id)}
                 >
-                  <i class="fas fa-trash-alt fa-2x text-danger"></i>
+                  <i className="fas fa-trash-alt fa-2x text-danger"></i>
                 </button>
-              <div className="modal fade text-dark" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">
-                                    Modify Account information
-                                </h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-                            </div>
-                            <div className="modal-body">
-                                <form>
-                                    <div className="mb-3">
-                                        <input type="text" className="form-control" id='modifiedName' placeholder='Account name' aria-describedby="emailHelp" />
-                                    </div>
-                                    <div className="mb-3">
-                                        <input type="text" className="form-control" id='modifiedNumber' placeholder='Account number' aria-describedby="emailHelp" />
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                                    Close
-                                </button>
-                                <button type="button" onClick={()=> modifyAccount()} className="btn btn-primary">
-                                    Save changes
-                                </button>
-                            </div>
-                        </div>
+                <div
+                  className="modal fade text-dark"
+                  id="exampleModal"
+                  tabIndex={-1}
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true"
+                >
+                  <div className="modal-dialog">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title" id="exampleModalLabel">
+                          Modify Account information
+                        </h5>
+                        <button
+                          type="button"
+                          className="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        />
+                      </div>
+                      <div className="modal-body">
+                        <form>
+                          <div className="mb-3">
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="modifiedName"
+                              placeholder="Account name"
+                              aria-describedby="emailHelp"
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="modifiedNumber"
+                              placeholder="Account number"
+                              aria-describedby="emailHelp"
+                            />
+                          </div>
+                        </form>
+                      </div>
+                      <div className="modal-footer">
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => modifyAccount()}
+                          className="btn btn-primary"
+                        >
+                          Save changes
+                        </button>
+                      </div>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -236,12 +302,7 @@ export default function MainContent({
         </div>
       </div>
       {/* Money transfer tab */}
-      <div
-        class="tab-pane text-white fade"
-        id="v-pills-profile"
-        role="tabpanel"
-        aria-labelledby="v-pills-profile-tab"
-      >
+      <div className="tab-pane text-white fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" >
         <div className="container text-dark bg-light border border-1 border-white">
           <div className="row my-3">
             <div className="col-6">
@@ -249,14 +310,14 @@ export default function MainContent({
                 <label className="input-group-text">From</label>
                 <select
                   onChange={(e) => changeHandler(e)}
-                  class="form-select"
+                  className="form-select"
                   id="optionTransferFrom"
                 >
                   <option selected>Account</option>
                   {/* List rendering of options. Each account number in the state gets and option to send or receive money from the other end */}
-                  {userAccounts.map((userAccount) => {
+                  {userAccounts.map((userAccount, i) => {
                     return (
-                      <option value={userAccount.id}>
+                      <option key={i} value={userAccount.id}>
                         {userAccount.accountNumber}
                       </option>
                     );
@@ -269,7 +330,7 @@ export default function MainContent({
                 <label className="input-group-text">To</label>
                 <select
                   onChange={(e) => changeHandler2(e)}
-                  class="form-select"
+                  className="form-select"
                   id="optionTransferTo"
                 >
                   <option selected>Account</option>
@@ -323,13 +384,23 @@ export default function MainContent({
           </div>
         </div>
       </div>
+      
+      {/* Settings tab */}
       <div
-        class="tab-pane text-white fade"
+        className="tab-pane text-white fade"
         id="v-pills-settings"
         role="tabpanel"
         aria-labelledby="v-pills-settings-tab"
       >
-        settings
+        <form className='py-5'>
+          <h1 className='mb-5'>Changer la couleur de l'interface</h1>
+          <select onChange={(e)=> changeHandlerColor(e)}>
+            <option defaultValue="blue">blue</option>
+            <option value="green">green</option>
+            <option value="red">red</option>
+          </select>
+          <input type="button" onClick={() => changeMyColor()} className='mx-2 hoverperso btn btn-primary rounded-pill border-1 border-white' value='changer'  />
+        </form>
       </div>
     </div>
   );

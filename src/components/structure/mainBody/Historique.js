@@ -1,29 +1,42 @@
 import React from 'react'
 
 
-export default function CompteDepargne(historiqueTrans) {
+export default function CompteDepargne(transactionsDuCompte) {
+    let historique = transactionsDuCompte.historique;
+    let userAccounts = JSON.parse(localStorage.getItem('dataUserAccounts'))
     return (
         <div>
-            <div className="container text-center bg-perso border border-white border-2">
-                <h1> Historique de transactions</h1>
-                <table class="table">
+            {console.log(transactionsDuCompte.historique)}
+            <div className="mt-5 p-5 container text-center bg-perso border border-white border-2">
+                <h1 className='mb-5'> Historique de transactions</h1>
+                <table className="table">
                     <thead>
                         <tr>
+                            <th scope="col">nr</th>
                             <th scope="col">From</th>
                             <th scope="col">To</th>
                             <th scope="col">Amount</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {console.log(historiqueTrans)}
-                        {/* {historiqueTrans.map(historique=>{
-                            <tr>
-                                <td>{historique.sendFrom}</td>
-                                <td>{historique.sendTo}</td>
-                                <td>{historique.amountSent}</td>
-                            </tr>
-                        })} */}
-                    
+                    <tbody className='bg-perso2'>
+                        {historique.map((historique,i)=>{
+                            return(
+                                <tr key={i}>
+                                    <th scope="row">{i+1}</th>
+                                    <td>{userAccounts.map(element => {
+                                        if (element.id == historique.sendFrom) {
+                                            return element.name
+                                        }
+                                    })}</td>
+                                    <td>{userAccounts.map(element => {
+                                        if (element.id == historique.sendTo) {
+                                            return element.name
+                                        }
+                                    })}</td>
+                                    <td>{historique.amountSent} Eur</td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             </div>
