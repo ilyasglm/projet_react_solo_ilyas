@@ -3,9 +3,13 @@
 }
 
 .hoverperso:hover{
-    background-color: white;
+    background-color: white !important;
     color: #0d6efd  !important;
 }
+.hoverperso{
+    background-color: transparent !important;
+}
+
 
 .bg-perso {
     background-color: rgba(255, 255, 255, .11);

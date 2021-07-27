@@ -1,22 +1,33 @@
 import { useState } from "react";
-import useLocalStorage from '../../../LocalStorage'
+import useLocalStorage from "../../../LocalStorage";
 
-export default function MainContent({userAccounts, setUserAccounts, countId, setCountId, sendFrom, sendTo, setSendFrom, setSendTo, transactionsDuCompte, setHistorique,
+export default function MainContent({
+  userAccounts,
+  setUserAccounts,
+  countId,
+  setCountId,
+  sendFrom,
+  sendTo,
+  setSendFrom,
+  setSendTo,
+  transactionsDuCompte,
+  setHistorique,
 }) {
   // Creation of states
   let historique = transactionsDuCompte.transactionsDuCompte;
   let [chkbox, setChkbox] = useState("false");
   let [myId, setMyId] = useState("");
-  let [myColor, setMyColor] = useLocalStorage('dataMyColor', 'blue')
+  let [myColor, setMyColor] = useLocalStorage("dataMyColor", "blue");
+  let [checkDeleted, setCheckDeleted] = useLocalStorage('dataDeleted', []);
 
   // Change handlers
   function changeHandlerColor(e) {
-    if (e.target.value == 'green') {
-      setMyColor('green')
-    } else if (e.target.value == 'red') {
-      setMyColor('red')
+    if (e.target.value == "green") {
+      setMyColor("green");
+    } else if (e.target.value == "red") {
+      setMyColor("red");
     } else {
-      setMyColor('blue')
+      setMyColor("blue");
     }
   }
 
@@ -27,7 +38,7 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
       setChkbox("false");
     }
   }
-  
+
   function changeHandler(e) {
     setSendFrom(e.target.value);
     console.log(e.target.value);
@@ -59,6 +70,9 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
       if (element.id == userId) {
         let x = toBeDeleted.indexOf(element);
         toBeDeleted.splice(x, 1);
+        let y = {id: element.id, name: element.name}
+        let yArray = [...checkDeleted, y]
+        setCheckDeleted(yArray)
       }
     });
     setUserAccounts(toBeDeleted);
@@ -79,6 +93,7 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
     });
     if (chkbox == "true") {
       setUserAccounts(findMe);
+      window.location.reload(true);
     } else {
       setTimeout(() => {
         alert(`${amountSent} € a été débité de votre compte`);
@@ -96,7 +111,6 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
       "dataTransaction",
       JSON.stringify(historiqueTransArray)
     );
-    window.location.reload(true);
   }
 
   function modifyAccount() {
@@ -115,19 +129,23 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
   }
 
   function changeMyColor() {
-    let changeMyBGColor = document.getElementById('app')
-    if (myColor == 'green') {
-      changeMyBGColor.classList.remove('bg-primary')
-      changeMyBGColor.classList.remove('bg-danger')
-      changeMyBGColor.classList.add('bg-success')
-    } else if (myColor == 'red') {
-      changeMyBGColor.classList.remove('bg-primary')
-      changeMyBGColor.classList.remove('bg-success')
-      changeMyBGColor.classList.add('bg-danger')
+    let changeMyBGColor = document.getElementById("app");
+    if (myColor == "green") {
+      changeMyBGColor.classList.remove("bg-primary");
+      changeMyBGColor.classList.remove("bg-danger");
+      changeMyBGColor.classList.add("bg-success");
+      window.location.reload(true);
+    } else if (myColor == "red") {
+      changeMyBGColor.classList.remove("bg-primary");
+      changeMyBGColor.classList.remove("bg-success");
+      changeMyBGColor.classList.add("bg-danger");
+      window.location.reload(true);
+      
     } else {
-      changeMyBGColor.classList.remove('bg-danger')
-      changeMyBGColor.classList.remove('bg-success')
-      changeMyBGColor.classList.add('bg-primary')
+      changeMyBGColor.classList.remove("bg-danger");
+      changeMyBGColor.classList.remove("bg-success");
+      changeMyBGColor.classList.add("bg-primary");
+      window.location.reload(true);
     }
   }
 
@@ -170,7 +188,7 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
                   className="w-100 border-0 bg-transparent"
                   onClick={() => deleteAccount(userAccount.id)}
                 >
-                  <i className="fas fa-trash-alt fa-2x text-danger"></i>
+                  <i className={"fas fa-trash-alt fa-2x " + (myColor === "red" ? "text-primary":"text-danger")}></i>
                 </button>
                 <div
                   className="modal fade text-dark"
@@ -240,7 +258,7 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
         {/* Modal opening button followed by account creation modal */}
         <button
           type="button"
-          className="btn btn-danger rounded-pill my-3"
+          className={"btn btn-danger rounded-pill my-3 "+ (myColor === "red" ? "bg-primary":"bg-danger")}
           data-bs-toggle="modal"
           data-bs-target="#staticBackdrop"
         >
@@ -302,8 +320,13 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
         </div>
       </div>
       {/* Money transfer tab */}
-      <div className="tab-pane text-white fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" >
-        <div className="container text-dark bg-light border border-1 border-white">
+      <div
+        className="tab-pane text-white fade"
+        id="v-pills-profile"
+        role="tabpanel"
+        aria-labelledby="v-pills-profile-tab"
+      >
+        <div className="container text-dark bg-perso border border-1 border-white">
           <div className="row my-3">
             <div className="col-6">
               <div className="input-group">
@@ -376,7 +399,7 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
             <div className="col-4">
               <button
                 onClick={() => moneyTransfer()}
-                className="w-100 btn btn-primary rounded"
+                className="w-100 btn btn-primary hoverperso rounded-pill border-1 border-white"
               >
                 send
               </button>
@@ -384,7 +407,7 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
           </div>
         </div>
       </div>
-      
+
       {/* Settings tab */}
       <div
         className="tab-pane text-white fade"
@@ -392,14 +415,19 @@ export default function MainContent({userAccounts, setUserAccounts, countId, set
         role="tabpanel"
         aria-labelledby="v-pills-settings-tab"
       >
-        <form className='py-5'>
-          <h1 className='mb-5'>Changer la couleur de l'interface</h1>
-          <select onChange={(e)=> changeHandlerColor(e)}>
+        <form className="py-5">
+          <h1 className="mb-5">Changer la couleur de l'interface</h1>
+          <select onChange={(e) => changeHandlerColor(e)}>
             <option defaultValue="blue">blue</option>
             <option value="green">green</option>
             <option value="red">red</option>
           </select>
-          <input type="button" onClick={() => changeMyColor()} className='mx-2 hoverperso btn btn-primary rounded-pill border-1 border-white' value='changer'  />
+          <input
+            type="button"
+            onClick={() => changeMyColor()}
+            className="mx-2 hoverperso btn btn-primary rounded-pill border-1 border-white"
+            value="changer"
+          />
         </form>
       </div>
     </div>

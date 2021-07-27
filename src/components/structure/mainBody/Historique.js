@@ -4,9 +4,9 @@ import React from 'react'
 export default function CompteDepargne(transactionsDuCompte) {
     let historique = transactionsDuCompte.historique;
     let userAccounts = JSON.parse(localStorage.getItem('dataUserAccounts'))
+    let checkDeleted = JSON.parse(localStorage.getItem('dataDeleted'))
     return (
         <div>
-            {console.log(transactionsDuCompte.historique)}
             <div className="mt-5 p-5 container text-center bg-perso border border-white border-2">
                 <h1 className='mb-5'> Historique de transactions</h1>
                 <table className="table">
@@ -19,20 +19,38 @@ export default function CompteDepargne(transactionsDuCompte) {
                         </tr>
                     </thead>
                     <tbody className='bg-perso2'>
-                        {historique.map((historique,i)=>{
+                        {historique.map((historique,i,j,k)=>{
+                            j = 0;
+                            k = 0;
                             return(
                                 <tr key={i}>
                                     <th scope="row">{i+1}</th>
-                                    <td>{userAccounts.map(element => {
-                                        if (element.id == historique.sendFrom) {
-                                            return element.name
+                                    <td>
+                                        {userAccounts.map(element => {
+                                            if (element.id == historique.sendFrom) {
+                                                return element.name
+                                            }})
                                         }
-                                    })}</td>
-                                    <td>{userAccounts.map(element => {
-                                        if (element.id == historique.sendTo) {
-                                            return element.name
+                                        { (checkDeleted != null) ? (checkDeleted.map(element => {
+                                                if (element.id == historique.sendFrom) {
+                                                    return element.name + ' (deleted)'
+                                                }
+                                            })): ''
                                         }
-                                    })}</td>
+                                    </td>
+                                    <td>
+                                        {userAccounts.map(element => {
+                                            if (element.id == historique.sendTo) {
+                                                return element.name
+                                            }})
+                                        }
+                                        { (checkDeleted != null) ? (checkDeleted.map(element => {
+                                                if (element.id == historique.sendTo) {
+                                                    return element.name + ' (deleted)'
+                                                }
+                                            })): ''
+                                        }
+                                    </td>
                                     <td>{historique.amountSent} Eur</td>
                                 </tr>
                             )
