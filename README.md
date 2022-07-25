@@ -1,3 +1,11 @@
+# First solo react project for Molengeek
+
+Project of Molengeek to test our capabilities in React Js. A kind of intranet for personnal use to manage and transfer funds between bank accounts. This a platform where this could be "possible" if given autorisation and access by different banks (which is probably not possible).
+Can also work if other back-end functions does the transaction separatly (in accordance of the users wish in this platform) or gets the information from the banks own homebanking platforms and transmits it on this one.
+Made purely to test the usage of different React methods.
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
